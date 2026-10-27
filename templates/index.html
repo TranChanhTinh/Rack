@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kho của bé Liên 🎀</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand"><span class="brand-icon">⬡</span><span>KhoRack</span></div>
+  <nav><a class="active" href="#overview">⌂ <span>Tổng quan</span></a><a href="#racks">⬡ <span>Quản lý kho</span></a><a href="#search">⌕ <span>Tìm kiếm</span></a><a href="#history" id="historyBtn">◷ <span>Lịch sử</span></a><a href="#settings" id="settingsBtn">⚙ <span>Cài đặt</span></a></nav>
+  <div class="connection"><span class="dot"></span>Kết nối: <b>Online</b><small>Dữ liệu tự động lưu</small></div>
+</aside>
+<main id="overview">
+  <header class="topbar"><div class="page-title"><span class="title-icon">▤</span><div><h1>Kho của bé Liên</h1><p>Sơ đồ rack lưu trữ</p></div></div>
+    <div class="tools"><label class="search"><span>⌕</span><input id="searchInput" autocomplete="off" placeholder="Tìm mã box trên tất cả tab, ví dụ ML-101"><div id="suggestions" class="suggestions"></div></label><button id="clearSearch" class="filter-btn">✕ &nbsp; Xóa tìm kiếm</button></div>
+  </header>
+  <section class="stats"><article class="stat"><div class="stat-icon blue">♦</div><div><p>Khu vực</p><strong id="areaCount">4</strong><small>khu vực</small></div><span class="stat-art">▤</span></article><article class="stat"><div class="stat-icon green">▰</div><div><p>Tầng</p><strong>10</strong><small>tầng</small></div><span class="stat-art green-text">▂</span></article><article class="stat"><div class="stat-icon purple">⬡</div><div><p>Vị trí</p><strong id="positionCount">240</strong><small>vị trí</small></div><span class="stat-art purple-text">⬡</span></article><article class="stat"><div class="stat-icon orange">◷</div><div><p>Sức chứa</p><strong id="capacity">0%</strong><div class="progress"><span id="progressBar"></span></div></div><span class="stat-art orange-text">◔</span></article></section>
+  <div class="tabbar" id="tabbar"><div class="tab-list" id="tabList"></div><div class="data-actions"><a class="add-tab" href="{{ url_for('export_excel') }}">↓ Tải dữ liệu Excel</a><a class="add-tab" href="{{ url_for('excel_template') }}">↓ File Excel mẫu</a><label class="add-tab import-label" for="excelImport">↑ Nhập Excel</label><input id="excelImport" type="file" accept=".xlsx,.xlsm" hidden><button id="undoAction" class="add-tab undo-btn" type="button" disabled>↶ Khôi phục</button><button id="addTab" class="add-tab">＋ Thêm tab</button></div></div>
+  <section class="rack-grid" id="racks">
+  {% for rack in racks %}<article class="rack-card" data-rack="{{ rack.id }}" style="--rack-color:{{ rack.color }}"><div class="rack-heading"><div class="rack-title" title="Nhấp chuột phải để đổi tên"><span class="pin">●</span><b>{{ rack.name }}</b></div><div class="usage"><span class="ring"></span><span><b class="rack-percent">0%</b><small>Đã sử dụng</small></span></div></div><div class="rack-content">
+      {% for tier in rack.tiers %}<section class="tier"><div class="tier-label">{{ tier }}</div><div class="boxes">{% for pos in range(1, 25) %}<button class="box" data-key="{{ rack.id }}|{{ tier }}|{{ pos }}" data-name="" title="Chuột phải để sửa; giữ chuột phải để di chuyển"></button>{% endfor %}</div></section>{% endfor %}
+      </div><footer>{{ rack.tiers|length }} tầng • {{ rack.tiers|length * 24 }} vị trí</footer></article>{% endfor %}
+  </section>
+  <div class="hint"><span>i</span> Chuột phải vào tiêu đề rack để đổi tên. Chuột phải vào box để sửa/xóa; giữ chuột phải và kéo sang ô khác để di chuyển. Thanh tìm kiếm có gợi ý tự động.</div><div id="status" class="status">Sẵn sàng • Dữ liệu tự động lưu</div>
+</main>
+<div id="contextMenu" class="context-menu"><button data-action="edit">✎ &nbsp; Nhập / sửa tên box</button><button data-action="delete">× &nbsp; Xóa tên box</button></div>
+<script id="initialState" type="application/json">{{ state|tojson }}</script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
